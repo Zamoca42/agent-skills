@@ -112,5 +112,5 @@ terminal(command="python $S report")
 - `python <skill dir>/scripts/inbox_brief.py doctor` reports every account `ok`.
 - After `apply --yes`, `kept list` shows the kept mail, and the trash folder holds the moved mail
   (`terminal(command="himalaya -a <account> envelope list -m <trash> --page-size 5")`).
-- The repository tests pass: `terminal(command="python -m pytest -q tests")`. They use a fake himalaya and
+- The repository tests pass: `terminal(command="python -m pytest -q tests/inbox-brief")` from the repo root. They use a fake himalaya and
   no network.

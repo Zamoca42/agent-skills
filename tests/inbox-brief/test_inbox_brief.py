@@ -6,13 +6,14 @@ import sys
 
 import pytest
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SCRIPTS = os.path.join(ROOT, "inbox-brief", "scripts")
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(os.path.dirname(HERE))
+SCRIPTS = os.path.join(ROOT, "skills", "inbox-brief", "scripts")
 sys.path.insert(0, SCRIPTS)
 import inbox_brief  # noqa: E402
 import secret  # noqa: E402
 
-FAKE = os.path.join(ROOT, "tests", "fake_himalaya.py")
+FAKE = os.path.join(HERE, "fake_himalaya.py")
 
 
 def env(i, name, email, subject, seen=False):
