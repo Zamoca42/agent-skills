@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+# local config and run state never belong in the repo
+config.toml
+!inbox-brief/templates/config.example.toml
+state/
+*.key
+*.secret

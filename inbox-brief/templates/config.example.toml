@@ -1,0 +1,64 @@
+# inbox-brief configuration. Copy to ~/.config/inbox-brief/config.toml (or point $INBOX_BRIEF_CONFIG at it).
+# Every key except [[accounts]] is optional; the values shown are the defaults unless marked "example".
+
+himalaya = "himalaya"              # command or path; a list like ["himalaya", "-b", "imap"] also works
+himalaya_config = ""               # optional: passed to himalaya as -c
+hermes = "hermes"                  # used by the "hermes" backends
+state_dir = "~/.local/state/inbox-brief"   # runs, kept-mail queue and action log live here
+language = "en"                    # report language: en | ko
+query = "not flag seen"            # himalaya search query for "unread"
+
+# One block per himalaya account (the name must match [accounts.<name>] in himalaya's config).
+[[accounts]]
+name = "personal"                  # example
+trash = "trash"                    # mailbox name or himalaya alias to move unwanted mail to
+
+[[accounts]]
+name = "work"                      # example
+trash = "[Gmail]/Trash"            # example
+
+[classify]
+backend = "agent"                  # agent: the chat model labels mail itself (on-demand use)
+                                   # hermes: one-shot `hermes -z` call with provider/model below
+                                   # typesafe: TypeSafe decision API (Jev); sender + subject only
+provider = ""                      # hermes backend: e.g. "openrouter"; empty = Hermes default
+model = ""                         # hermes backend: e.g. a small, cheap model
+timeout = 420
+typesafe_model = "jev-1.13.0"
+typesafe_key = ["env:TYPESAFE_API_KEY"]   # secret specs, first match wins (see references/secrets.md)
+min_confidence = 0.7               # typesafe: below this the mail is kept instead of trashed
+
+[digest]
+backend = "agent"                  # agent | hermes | none (none = subject list only)
+provider = ""
+model = ""
+max_mails = 20                     # newsletters whose bodies are summarized (one per sender first)
+per_mail_chars = 7000
+
+[rules]
+# Deterministic labels applied before any model. Matching is a case-insensitive substring of
+# "Sender Name <address>" (senders) or of the subject (markers, keywords). Order:
+# keep_senders -> promo_subject_markers -> newsletter/promo/junk_senders -> keep_keywords -> model.
+keep_senders = []                  # example: ["@mycompany.example", "family@example.com"]
+newsletter_senders = []            # example: ["newsletters.example-news.com", "Example Weekly"]
+promo_senders = []                 # example: ["deals@shop.example"]
+junk_senders = []                  # example: ["noreply@receipts.example"]
+promo_subject_markers = ["(광고)", "[광고]", "(AD)", "[AD]"]
+keep_keywords = []                 # example: ["security alert", "payment failed"] — forces keep, even for newsletters
+
+[criteria]
+# Label definitions handed to the model (hermes, typesafe and agent backends alike).
+# Bump `version` when you edit them so runs record which wording they used.
+version = "v1"
+# context = "..."
+# keep = "..."
+# newsletter = "..."
+# promo = "..."
+# junk = "..."
+
+[apply]
+auto_trash = false                 # true lets `apply`/`run` move mail without --yes (unattended cron)
+batch = 25                         # ids per move; failed batches are retried one by one
+
+[report]
+max_keep_items = 8
